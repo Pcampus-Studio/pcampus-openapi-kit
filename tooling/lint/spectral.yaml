@@ -1,0 +1,14 @@
+extends:
+  - spectral:oas
+  - ./rules/pcampus.js
+
+rules:
+  info-description: error
+  info-contact: off
+  operation-description: error
+  operation-operationId-unique: error
+  operation-operationId: error
+  operation-tag-defined: error
+  tag-description: warn
+  oas3-api-servers: off
+  oas3-unused-component: off

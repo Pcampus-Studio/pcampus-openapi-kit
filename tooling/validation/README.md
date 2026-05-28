@@ -1,9 +1,32 @@
 # Validation Tooling
 
-Schema validation utilities for specs and generated artifacts.
+OpenAPI structural validation with reference resolution.
 
-Planned content:
+## Run locally
 
-- OpenAPI 3.1 validation
-- reference resolution across `specs/` modules
-- breaking-change detection between spec versions
+```bash
+npm install
+npm run validate
+```
+
+Validate a specific module:
+
+```bash
+npx pcampus-openapi-kit validate specs/billing/openapi.yaml
+```
+
+Validation uses `@apidevtools/swagger-parser` to resolve `$ref` links across `specs/shared/`.
+
+## CI
+
+GitHub Actions runs `npm test` (lint + validate) on every pull request.
+
+## Consumer projects
+
+Use the composite action:
+
+```yaml
+- uses: pcampus-studio/pcampus-openapi-kit/.github/actions/validate@v1
+  with:
+    spec: ./openapi.yaml
+```

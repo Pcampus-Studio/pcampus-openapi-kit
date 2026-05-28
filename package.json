@@ -1,0 +1,45 @@
+{
+  "name": "@pcampus/openapi-kit",
+  "version": "1.0.0",
+  "description": "Production-ready OpenAPI conventions and templates for Human + AI software teams.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pcampus-studio/pcampus-openapi-kit"
+  },
+  "keywords": [
+    "openapi",
+    "api",
+    "spectral",
+    "contracts",
+    "ai",
+    "pcampus"
+  ],
+  "bin": {
+    "pcampus-openapi-kit": "./bin/pcampus-openapi-kit.js"
+  },
+  "files": [
+    "bin/",
+    "tooling/",
+    "templates/",
+    "specs/shared/",
+    "conventions/"
+  ],
+  "scripts": {
+    "lint": "node bin/pcampus-openapi-kit.js lint",
+    "validate": "node bin/pcampus-openapi-kit.js validate",
+    "test": "npm run lint && npm run validate",
+    "test:example": "cd examples/fastapi && pytest -q",
+    "init": "node bin/pcampus-openapi-kit.js init"
+  },
+  "dependencies": {
+    "@apidevtools/swagger-parser": "^10.1.1",
+    "@stoplight/spectral-cli": "^6.15.0",
+    "@stoplight/spectral-core": "^1.20.0",
+    "@stoplight/spectral-functions": "^1.10.1",
+    "@stoplight/spectral-rulesets": "^1.22.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

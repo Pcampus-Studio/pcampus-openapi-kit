@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Pcampus Studio
+    url: https://github.com/pcampus-studio
+    about: Maintainer organization on GitHub
+  - name: Roadmap
+    url: https://github.com/pcampus-studio/pcampus-openapi-kit/blob/main/ROADMAP.md
+    about: See planned work and upcoming releases

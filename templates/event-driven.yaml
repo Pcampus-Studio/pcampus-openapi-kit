@@ -63,7 +63,9 @@ paths:
       tags: [Events]
       operationId: get_event
       summary: Get event by ID
-      description: Retrieve a published event by UUID.
+      description: |
+        Retrieve a published event by UUID for troubleshooting or replay review.
+        Returns 404 when the event does not exist in the authenticated tenant.
       parameters:
         - name: event_id
           in: path

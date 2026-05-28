@@ -77,7 +77,7 @@ paths:
       operationId: get_resource
       summary: Get resource
       description: |
-        Retrieve a single resource by UUID.
+        Retrieve a single resource by UUID for the authenticated tenant.
         Returns 404 when the resource does not exist or is not visible in the tenant.
       parameters:
         - $ref: '#/components/parameters/ResourceId'
@@ -104,9 +104,9 @@ paths:
       operationId: update_resource
       summary: Update resource
       description: |
-        Partially update a resource by UUID.
+        Partially update a resource by UUID for the authenticated tenant.
         Returns 404 when the resource does not exist.
-        Returns 409 when the update conflicts with current state.
+        Returns 409 when the update conflicts with current resource state.
       parameters:
         - $ref: '#/components/parameters/ResourceId'
       requestBody:
@@ -142,8 +142,9 @@ paths:
       operationId: delete_resource
       summary: Delete resource
       description: |
-        Permanently delete a resource by UUID.
+        Permanently delete a resource by UUID for the authenticated tenant.
         Returns 404 when the resource does not exist.
+        Returns 403 when the requester lacks tenant access.
       parameters:
         - $ref: '#/components/parameters/ResourceId'
       responses:

@@ -4,6 +4,8 @@ info:
   version: 1.0.0
   description: Reusable pagination schemas for list endpoints.
 
+paths: {}
+
 components:
   parameters:
     Cursor:

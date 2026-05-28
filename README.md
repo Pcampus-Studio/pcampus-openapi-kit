@@ -3,6 +3,38 @@
 Production-ready OpenAPI conventions and templates  
 for Human + AI software teams.
 
+[![CI](https://github.com/pcampus-studio/pcampus-openapi-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/pcampus-studio/pcampus-openapi-kit/actions/workflows/ci.yml)
+
+**Version 1.0.0** — ready to use today.
+
+---
+
+## Quick Start
+
+```bash
+git clone https://github.com/pcampus-studio/pcampus-openapi-kit.git
+cd pcampus-openapi-kit
+npm install
+npm test
+```
+
+Scaffold a new API:
+
+```bash
+npx pcampus-openapi-kit init crud --name customer --out ./customers-api
+```
+
+Run the billing reference app:
+
+```bash
+cd examples/fastapi
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8080
+pytest -q
+```
+
+Full guide: [docs/quickstart.md](docs/quickstart.md)
+
 ---
 
 ## Overview
@@ -163,6 +195,7 @@ pcampus-openapi-kit/
 │   └── generation/
 │
 └── docs/
+    ├── quickstart.md
     ├── philosophy.md
     ├── workflows.md
     ├── human-review.md
@@ -257,6 +290,9 @@ We welcome contributors who care about:
 Before contributing, please read:
 
 - [CONTRIBUTING.md](CONTRIBUTING.md)
+- [GOOD_FIRST_ISSUES.md](GOOD_FIRST_ISSUES.md)
+- [ROADMAP.md](ROADMAP.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [conventions/](conventions/)
 - [docs/philosophy.md](docs/philosophy.md)
 

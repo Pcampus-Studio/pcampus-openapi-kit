@@ -1,0 +1,33 @@
+name: Spec Contribution
+description: Propose a new or updated OpenAPI module
+title: "[Spec]: "
+labels: ["spec", "triage"]
+body:
+  - type: textarea
+    id: module
+    attributes:
+      label: Module
+      description: Which domain module does this affect?
+      placeholder: billing, auth, crm, inventory, notifications, shared
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What endpoints or schemas are you adding or changing?
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Spec checklist
+      options:
+        - label: Descriptions mention important failure cases
+          required: true
+        - label: Errors use shared ErrorResponse where applicable
+          required: true
+        - label: Mutating operations include x-agent-hints
+          required: true
+        - label: Breaking changes are called out explicitly
+          required: false

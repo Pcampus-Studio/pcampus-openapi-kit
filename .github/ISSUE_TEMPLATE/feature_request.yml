@@ -1,0 +1,32 @@
+name: Feature Request
+description: Suggest a new convention, tool, or module
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem should this solve for Human + AI teams?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - specs
+        - conventions
+        - templates
+        - tooling
+        - examples
+        - docs
+        - ci
+    validations:
+      required: true

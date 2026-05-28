@@ -4,6 +4,8 @@ info:
   version: 1.0.0
   description: Canonical error schemas reused across pcampus-openapi-kit modules.
 
+paths: {}
+
 components:
   schemas:
     ErrorResponse:
