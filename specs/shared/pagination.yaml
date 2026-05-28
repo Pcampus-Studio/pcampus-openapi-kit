@@ -1,0 +1,41 @@
+openapi: 3.1.0
+info:
+  title: Shared Pagination Components
+  version: 1.0.0
+  description: Reusable pagination schemas for list endpoints.
+
+components:
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Opaque cursor returned by a previous list response.
+
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Maximum number of items to return.
+
+  schemas:
+    PaginationMeta:
+      type: object
+      required:
+        - has_more
+      properties:
+        next_cursor:
+          type: string
+          nullable: true
+          description: Present when has_more is true.
+        has_more:
+          type: boolean
+        limit:
+          type: integer

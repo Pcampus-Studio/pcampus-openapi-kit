@@ -1,0 +1,15 @@
+openapi: 3.1.0
+info:
+  title: Auth Module
+  version: 1.0.0
+  description: Authentication and authorization contracts.
+
+paths: {}
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer token issued by the platform identity service.

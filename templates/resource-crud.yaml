@@ -1,0 +1,270 @@
+openapi: 3.1.0
+info:
+  title: Resource CRUD Template
+  version: 1.0.0
+  description: Starter template for a tenant-scoped CRUD resource.
+
+servers:
+  - url: https://api.example.com/v1
+
+tags:
+  - name: Resources
+    description: Manage resource records.
+
+paths:
+  /resources:
+    get:
+      tags: [Resources]
+      operationId: list_resources
+      summary: List resources
+      description: |
+        Retrieve a paginated list of resources for the authenticated tenant.
+        Returns 401 when authentication is missing or invalid.
+        Returns 403 when the requester lacks tenant access.
+      parameters:
+        - $ref: '../specs/shared/pagination.yaml#/components/parameters/Cursor'
+        - $ref: '../specs/shared/pagination.yaml#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Paginated list of resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResourceList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      x-agent-hints:
+        safe_to_retry: true
+        destructive: false
+        requires_confirmation: false
+
+    post:
+      tags: [Resources]
+      operationId: create_resource
+      summary: Create resource
+      description: |
+        Create a new resource for the authenticated tenant.
+        Returns 422 when input fails semantic validation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceCreateRequest'
+      responses:
+        '201':
+          description: Resource created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+      x-agent-hints:
+        safe_to_retry: false
+        destructive: false
+        requires_confirmation: true
+
+  /resources/{resource_id}:
+    get:
+      tags: [Resources]
+      operationId: get_resource
+      summary: Get resource
+      description: |
+        Retrieve a single resource by UUID.
+        Returns 404 when the resource does not exist or is not visible in the tenant.
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: Resource found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-agent-hints:
+        safe_to_retry: true
+        destructive: false
+        requires_confirmation: false
+
+    patch:
+      tags: [Resources]
+      operationId: update_resource
+      summary: Update resource
+      description: |
+        Partially update a resource by UUID.
+        Returns 404 when the resource does not exist.
+        Returns 409 when the update conflicts with current state.
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceUpdateRequest'
+      responses:
+        '200':
+          description: Resource updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+      x-agent-hints:
+        safe_to_retry: false
+        destructive: false
+        requires_confirmation: true
+
+    delete:
+      tags: [Resources]
+      operationId: delete_resource
+      summary: Delete resource
+      description: |
+        Permanently delete a resource by UUID.
+        Returns 404 when the resource does not exist.
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '204':
+          description: Resource deleted successfully.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-agent-hints:
+        safe_to_retry: false
+        destructive: true
+        requires_confirmation: true
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    ResourceId:
+      name: resource_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier of the resource.
+
+  schemas:
+    Resource:
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ResourceCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+
+    ResourceUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+
+    PaginatedResourceList:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+        pagination:
+          $ref: '../specs/shared/pagination.yaml#/components/schemas/PaginationMeta'
+
+  responses:
+    Unauthorized:
+      description: Authentication is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '../specs/shared/errors.yaml#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Requester lacks access to the resource or tenant.
+      content:
+        application/json:
+          schema:
+            $ref: '../specs/shared/errors.yaml#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '../specs/shared/errors.yaml#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Request conflicts with current resource state.
+      content:
+        application/json:
+          schema:
+            $ref: '../specs/shared/errors.yaml#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: Input failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '../specs/shared/errors.yaml#/components/schemas/ValidationErrorResponse'
+
+security:
+  - bearerAuth: []

@@ -1,0 +1,7 @@
+openapi: 3.1.0
+info:
+  title: Billing Module
+  version: 0.1.0
+  description: Billing, invoices, and payment-related contracts.
+
+paths: {}

@@ -1,0 +1,7 @@
+openapi: 3.1.0
+info:
+  title: Notifications Module
+  version: 0.1.0
+  description: Notification delivery and subscription contracts.
+
+paths: {}

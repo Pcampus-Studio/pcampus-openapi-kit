@@ -1,0 +1,7 @@
+openapi: 3.1.0
+info:
+  title: Inventory Module
+  version: 0.1.0
+  description: Inventory and stock management contracts.
+
+paths: {}

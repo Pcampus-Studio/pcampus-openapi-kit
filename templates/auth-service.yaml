@@ -1,0 +1,134 @@
+openapi: 3.1.0
+info:
+  title: Auth Service Template
+  version: 1.0.0
+  description: Starter template for token-based authentication flows.
+
+servers:
+  - url: https://auth.example.com/v1
+
+tags:
+  - name: Auth
+    description: Authentication and session management.
+
+paths:
+  /auth/token:
+    post:
+      tags: [Auth]
+      operationId: issue_token
+      summary: Issue access token
+      description: |
+        Exchange valid credentials for an access token.
+        Returns 401 when credentials are invalid.
+        Returns 429 when rate limits are exceeded.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: Token issued successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          description: Invalid credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '../specs/shared/errors.yaml#/components/schemas/ErrorResponse'
+        '429':
+          description: Too many authentication attempts.
+          content:
+            application/json:
+              schema:
+                $ref: '../specs/shared/errors.yaml#/components/schemas/ErrorResponse'
+      x-agent-hints:
+        safe_to_retry: false
+        destructive: false
+        requires_confirmation: true
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      operationId: get_current_principal
+      summary: Get current principal
+      description: |
+        Retrieve profile information for the authenticated principal.
+        Returns 401 when the token is missing or invalid.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Authenticated principal profile.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Principal'
+        '401':
+          description: Authentication is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '../specs/shared/errors.yaml#/components/schemas/ErrorResponse'
+      x-agent-hints:
+        safe_to_retry: true
+        destructive: false
+        requires_confirmation: false
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TokenRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    TokenResponse:
+      type: object
+      required:
+        - access_token
+        - token_type
+        - expires_in
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds.
+
+    Principal:
+      type: object
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        tenant_id:
+          type: string
+          format: uuid
+          nullable: true

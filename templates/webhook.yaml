@@ -1,0 +1,163 @@
+openapi: 3.1.0
+info:
+  title: Webhook Template
+  version: 1.0.0
+  description: Starter template for outbound webhook subscriptions and deliveries.
+
+servers:
+  - url: https://api.example.com/v1
+
+tags:
+  - name: Webhooks
+    description: Manage webhook subscriptions and delivery attempts.
+
+paths:
+  /webhooks:
+    get:
+      tags: [Webhooks]
+      operationId: list_webhooks
+      summary: List webhook subscriptions
+      description: List webhook subscriptions for the authenticated tenant.
+      responses:
+        '200':
+          description: Webhook subscriptions returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WebhookSubscription'
+      x-agent-hints:
+        safe_to_retry: true
+        destructive: false
+        requires_confirmation: false
+
+    post:
+      tags: [Webhooks]
+      operationId: create_webhook
+      summary: Create webhook subscription
+      description: |
+        Register a new webhook endpoint for domain events.
+        Returns 422 when the target URL or event filter is invalid.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreateRequest'
+      responses:
+        '201':
+          description: Webhook subscription created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscription'
+        '422':
+          description: Invalid webhook configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '../specs/shared/errors.yaml#/components/schemas/ValidationErrorResponse'
+      x-agent-hints:
+        safe_to_retry: false
+        destructive: false
+        requires_confirmation: true
+
+  /webhooks/{webhook_id}/deliveries:
+    get:
+      tags: [Webhooks]
+      operationId: list_webhook_deliveries
+      summary: List webhook deliveries
+      description: List delivery attempts for a webhook subscription.
+      parameters:
+        - name: webhook_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Delivery attempts returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WebhookDelivery'
+      x-agent-hints:
+        safe_to_retry: true
+        destructive: false
+        requires_confirmation: false
+
+components:
+  schemas:
+    WebhookSubscription:
+      type: object
+      required:
+        - id
+        - url
+        - events
+        - enabled
+      properties:
+        id:
+          type: string
+          format: uuid
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+        enabled:
+          type: boolean
+        secret:
+          type: string
+          nullable: true
+          description: Signing secret shown only at creation time.
+
+    WebhookCreateRequest:
+      type: object
+      required:
+        - url
+        - events
+      properties:
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+
+    WebhookDelivery:
+      type: object
+      required:
+        - id
+        - event_type
+        - status
+        - attempted_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+        status:
+          type: string
+          enum: [pending, delivered, failed]
+        attempted_at:
+          type: string
+          format: date-time
+        response_status:
+          type: integer
+          nullable: true

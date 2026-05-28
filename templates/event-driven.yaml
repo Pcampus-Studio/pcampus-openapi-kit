@@ -1,0 +1,126 @@
+openapi: 3.1.0
+info:
+  title: Event-Driven API Template
+  version: 1.0.0
+  description: Starter template for publishing and consuming domain events.
+
+servers:
+  - url: https://api.example.com/v1
+
+tags:
+  - name: Events
+    description: Domain event ingestion and replay.
+
+paths:
+  /events:
+    post:
+      tags: [Events]
+      operationId: publish_event
+      summary: Publish domain event
+      description: |
+        Publish a domain event to the platform event bus.
+        Returns 409 when an event with the same idempotency key already exists.
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Unique key used to deduplicate event publication.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventEnvelope'
+      responses:
+        '202':
+          description: Event accepted for processing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventAcceptedResponse'
+        '409':
+          description: Event with the same idempotency key already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '../specs/shared/errors.yaml#/components/schemas/ErrorResponse'
+        '422':
+          description: Event payload failed validation.
+          content:
+            application/json:
+              schema:
+                $ref: '../specs/shared/errors.yaml#/components/schemas/ValidationErrorResponse'
+      x-agent-hints:
+        safe_to_retry: true
+        destructive: false
+        requires_confirmation: true
+        workflow_hint: Use a stable idempotency key when retrying publication.
+
+  /events/{event_id}:
+    get:
+      tags: [Events]
+      operationId: get_event
+      summary: Get event by ID
+      description: Retrieve a published event by UUID.
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Event found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventEnvelope'
+        '404':
+          description: Event does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '../specs/shared/errors.yaml#/components/schemas/ErrorResponse'
+      x-agent-hints:
+        safe_to_retry: true
+        destructive: false
+        requires_confirmation: false
+
+components:
+  schemas:
+    EventEnvelope:
+      type: object
+      required:
+        - id
+        - type
+        - occurred_at
+        - data
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          example: customer.created
+        occurred_at:
+          type: string
+          format: date-time
+        data:
+          type: object
+          additionalProperties: true
+
+    EventAcceptedResponse:
+      type: object
+      required:
+        - id
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [accepted]

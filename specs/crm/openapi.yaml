@@ -1,0 +1,7 @@
+openapi: 3.1.0
+info:
+  title: CRM Module
+  version: 0.1.0
+  description: Customer and relationship management contracts.
+
+paths: {}
