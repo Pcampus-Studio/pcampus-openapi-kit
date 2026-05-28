@@ -1,55 +1,90 @@
 # pcampus-openapi-kit
 
-Production-ready OpenAPI conventions and templates  
+Production-ready OpenAPI conventions
 for Human + AI software teams.
 
 ---
 
-## Overview
+## Why
 
-`pcampus-openapi-kit` is an opinionated OpenAPI-first toolkit designed for modern software teams building with both humans and AI agents.
+Modern APIs are no longer consumed by humans alone.
 
-This project focuses on:
+Today, APIs are also used by:
 
-- reusable API contracts
-- deterministic schemas
-- AI-readable specifications
-- production-grade conventions
-- spec-first workflows
-- Human + AI collaboration
+* AI coding assistants
+* automation workflows
+* SDK generators
+* testing systems
+* AI agents
 
----
+But most OpenAPI specs today are still:
 
-# Why This Exists
+* inconsistent
+* ambiguous
+* difficult for AI to reason about
 
-Most OpenAPI specifications today are written only for:
-
-- documentation
-- SDK generation
-- API visualization
-
-But modern systems are increasingly consumed by:
-
-- AI coding assistants
-- AI agents
-- automation workflows
-- code generators
-- orchestration systems
-- testing pipelines
-
-Traditional API specs are often:
-
-- inconsistent
-- ambiguous
-- difficult for AI to reason about
-- hard to scale across teams
-
-This project aims to solve that.
+`pcampus-openapi-kit` aims to solve that.
 
 ---
 
-# Vision
+## Goals
 
-We believe OpenAPI should become:
+* reusable API contracts
+* deterministic schemas
+* AI-readable specifications
+* spec-first workflows
+* production-grade conventions
 
-> The single source of truth for Human + AI software delivery.
+---
+
+## Core Philosophy
+
+Instead of:
+
+code → docs
+
+We believe in:
+
+spec → implementation → tests → automation
+
+---
+
+## Principles
+
+* Contract-first development
+* AI-readable descriptions
+* Standardized error handling
+* Predictable API behavior
+* Human-approved governance
+
+---
+
+## Example
+
+```yaml
+x-agent-hints:
+  safe_to_retry: true
+  destructive: false
+  requires_confirmation: true
+```
+
+---
+
+## Repository Structure
+
+* `specs/` → reusable API modules
+* `templates/` → starter OpenAPI templates
+* `conventions/` → API standards
+* `examples/` → framework examples
+* `tooling/` → validation & generation tools
+
+---
+
+## Long-Term Vision
+
+Build reusable API contracts
+for the next generation of Human + AI software teams.
+
+---
+
+Maintained by Pcampus Studio
